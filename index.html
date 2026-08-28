@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zero Pictura — Wedding Photography</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- html2canvas + jsPDF for PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+
+    <style>
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #c9a84c;
+            --gold-light: #e8d5a3;
+            --gold-dark: #a8892f;
+            --dark: #0e0e0e;
+            --dark-card: #1a1a1a;
+            --dark-2: #222;
+            --text: #f0ece4;
+            --text-muted: #b0aaa0;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --radius: 8px;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            --transition: 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        /* ----- BUTTONS ----- */
+        .btn-primary {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: var(--font-sans);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201, 168, 76, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            color: var(--gold);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 12px 32px;
+            border: 1.5px solid var(--gold);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-outline:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .btn-outline:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ----- NAV ----- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 18px 0;
+            background: rgba(14, 14, 14, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+            transition: var(--transition);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text);
+        }
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+        .nav-links .btn-outline {
+            padding: 8px 24px;
+            font-size: 0.75rem;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--text);
+            transition: var(--transition);
+        }
+
+        /* ----- HERO ----- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 120px 0 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background:
+                linear-gradient(135deg, rgba(14, 14, 14, 0.7) 0%, rgba(14, 14, 14, 0.3) 60%, rgba(14, 14, 14, 0.7) 100%),
+                url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80') center / cover no-repeat;
+            filter: saturate(1.05);
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid rgba(201, 168, 76, 0.25);
+            padding: 6px 18px;
+            border-radius: 50px;
+            margin-bottom: 28px;
+            font-weight: 400;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.8rem, 8vw, 5.2rem);
+            font-weight: 700;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        .hero h1 span {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 520px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 56px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .hero-stats div {
+            text-align: left;
+        }
+        .hero-stats strong {
+            display: block;
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .hero-stats span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ----- PACKAGES ----- */
+        .packages {
+            padding: 100px 0 120px;
+            background: var(--dark);
+            position: relative;
+        }
+
+        .packages::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.15), transparent);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 500px;
+            font-weight: 300;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 56px;
+        }
+
+        .package-card {
+            background: var(--dark-card);
+            border-radius: var(--radius);
+            padding: 40px 32px 36px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .package-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(201, 168, 76, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .package-card.popular {
+            border-color: var(--gold);
+        }
+        .package-card.popular .popular-badge {
+            display: inline-block;
+        }
+
+        .popular-badge {
+            display: none;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--gold);
+            color: var(--dark);
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 14px;
+            border-radius: 50px;
+        }
+
+        .package-name {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .package-price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin: 12px 0 4px;
+            font-family: var(--font-serif);
+        }
+        .package-price small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: var(--font-sans);
+        }
+
+        .package-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 8px 0 20px;
+            font-weight: 300;
+            flex: 1;
+        }
+
+        .package-features {
+            list-style: none;
+            margin: 16px 0 28px;
+            padding: 0;
+        }
+        .package-features li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .package-features li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+
+        .package-card .btn-primary {
+            width: 100%;
+            text-align: center;
+            padding: 14px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        /* ----- BOOKING FORM (MODAL) ----- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--dark-card);
+            border-radius: 16px;
+            max-width: 640px;
+            width: 100%;
+            padding: 48px 40px 40px;
+            position: relative;
+            border: 1px solid rgba(201, 168, 76, 0.08);
+            box-shadow: var(--shadow);
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--gold);
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        .modal .sub {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        .form-group label .required {
+            color: var(--gold);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            cursor: pointer;
+        }
+        .form-group select option {
+            background: var(--dark);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #e74c3c;
+        }
+        .form-group.error .form-error {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .form-actions .btn-primary {
+            flex: 1;
+        }
+        .form-actions .btn-outline {
+            flex: 0 0 auto;
+        }
+
+        /* ----- INVOICE PAGE ----- */
+        #invoicePage {
+            display: none;
+            padding: 120px 0 80px;
+            min-height: 100vh;
+            background: var(--dark);
+        }
+
+        #invoicePage.active {
+            display: block;
+        }
+
+        .invoice-container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: #fcf9f5;
+            color: #1a1a1a;
+            border-radius: 16px;
+            padding: 48px 48px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .invoice-brand {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .invoice-brand span {
+            color: var(--gold-dark);
+        }
+        .invoice-brand .tag {
+            display: block;
+            font-size: 0.7rem;
+            font-family: var(--font-sans);
+            font-weight: 400;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+        .invoice-meta .number {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gold-dark);
+        }
+        .invoice-meta .date {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .invoice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+        .invoice-grid .field {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin-bottom: 2px;
+        }
+        .invoice-grid .value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 28px 0 24px;
+            font-size: 0.95rem;
+        }
+        .invoice-table th {
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0ddd8;
+            font-weight: 600;
+        }
+        .invoice-table td {
+            padding: 12px 0;
+            border-bottom: 1px solid #eeeae5;
+        }
+        .invoice-table tr:last-child td {
+            border-bottom: none;
+        }
+        .invoice-table .amount {
+            text-align: right;
+            font-weight: 500;
+        }
+        .invoice-table .total-row td {
+            font-weight: 600;
+            font-size: 1.05rem;
+            padding-top: 16px;
+            border-top: 2px solid var(--gold);
+            border-bottom: none;
+        }
+        .invoice-table .total-row .amount {
+            color: var(--gold-dark);
+        }
+
+        .invoice-summary {
+            margin-top: 8px;
+            padding-top: 20px;
+            border-top: 1px solid #e0ddd8;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .invoice-summary .status {
+            display: inline-block;
+            background: #f1c40f;
+            color: #1a1a1a;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 20px;
+            border-radius: 50px;
+        }
+        .invoice-summary .status.paid {
+            background: #2ecc71;
+        }
+        .invoice-summary .total-label {
+            font-weight: 500;
+            color: #555;
+        }
+        .invoice-summary .total-value {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold-dark);
+        }
+
+        .invoice-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+        .invoice-actions .btn-primary {
+            background: var(--gold-dark);
+            color: #fff;
+        }
+        .invoice-actions .btn-primary:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+        .invoice-actions .btn-outline {
+            border-color: #aaa;
+            color: #555;
+        }
+        .invoice-actions .btn-outline:hover {
+            background: #eee;
+            color: #1a1a1a;
+            border-color: #888;
+        }
+
+        /* ----- SUCCESS OVERLAY (mini) ----- */
+        .success-toast {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-card);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 12px;
+            padding: 16px 32px;
+            box-shadow: var(--shadow);
+            z-index: 3000;
+            text-align: center;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        .success-toast.show {
+            display: block;
+            animation: fadeUp 0.5s ease;
+        }
+        .success-toast strong {
+            color: var(--gold);
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 992px) {
+            .packages-grid {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            }
+            .invoice-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 14px 0;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                gap: 16px;
+                background: var(--dark);
+                padding: 24px;
+                position: absolute;
+                top: 70px;
+                left: 16px;
+                right: 16px;
+                border-radius: var(--radius);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .hamburger {
+                display: flex;
+            }
+
+            .hero {
+                padding: 100px 0 60px;
+            }
+            .hero h1 {
+                font-size: clamp(2.2rem, 10vw, 3.2rem);
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .hero-stats {
+                gap: 28px;
+                flex-wrap: wrap;
+            }
+            .hero-stats strong {
+                font-size: 1.4rem;
+            }
+
+            .packages {
+                padding: 60px 0 80px;
+            }
+            .packages-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .modal {
+                padding: 32px 20px 28px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .invoice-container {
+                padding: 24px 16px 28px;
+                border-radius: 12px;
+            }
+            .invoice-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: left;
+            }
+            .invoice-meta {
+                text-align: left;
+            }
+            .invoice-actions {
+                flex-direction: column;
+            }
+            .invoice-actions .btn-primary,
+            .invoice-actions .btn-outline {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .package-card {
+                padding: 28px 20px 24px;
+            }
+            .modal {
+                padding: 24px 16px 20px;
+            }
+        }
+
+        /* ----- UTILITY ----- */
+        .text-gold {
+            color: var(--gold);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">Zero<span>Pictura</span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#packages">Paket</a></li>
+                <li><a href="#" id="navBookingBtn" class="btn-outline" style="padding:8px 24px;font-size:0.75rem;">Booking</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ====== HERO ====== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">— Wedding Photography</div>
+                <h1>Abadikan <span>momen</span> terindahmu</h1>
+                <p>
+                    Zero Pictura menghadirkan gaya sinematik &amp; elegan untuk
+                    hari pernikahanmu. Setiap bingkai adalah cerita.
+                </p>
+                <div class="hero-actions">
+                    <a href="#packages" class="btn-primary">Lihat Paket</a>
+                    <a href="#" class="btn-outline" id="heroBookingBtn">Booking Sekarang</a>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>450+</strong><span>Pernikahan</span></div>
+                    <div><strong>4.9</strong><span>Rating ★</span></div>
+                    <div><strong>12</strong><span>Penghargaan</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== PACKAGES ====== -->
+    <section class="packages" id="packages">
+        <div class="container">
+            <div class="section-label">Pilih Paket</div>
+            <h2 class="section-title">Cocokkan dengan <span class="text-gold">visimu</span></h2>
+            <p class="section-sub">Setiap paket dirancang untuk memberikan hasil terbaik sesuai kebutuhan hari istimewamu.</p>
+
+            <div class="packages-grid" id="packagesGrid">
+                <!-- di-render oleh JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== BOOKING FORM MODAL ====== -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal">
+            <button class="modal-close" id="modalCloseBtn" aria-label="Tutup form">✕</button>
+            <h2>Booking</h2>
+            <p class="sub">Isi data berikut untuk memesan paket fotografi.</p>
+
+            <form id="bookingForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Lengkap <span class="required">*</span></label>
+                        <input type="text" id="clientName" placeholder="Nama lengkap" required />
+                        <div class="form-error">Nama wajib diisi</div>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp <span class="required">*</span></label>
+                        <input type="tel" id="clientWhatsapp" placeholder="08xxxxxxxxxx" required />
+                        <div class="form-error">Nomor WhatsApp wajib diisi</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" id="clientEmail" placeholder="email@domain.com" required />
+                    <div class="form-error">Email wajib diisi dengan format yang benar</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal Wedding <span class="required">*</span></label>
+                        <input type="date" id="weddingDate" required />
+                        <div class="form-error">Tanggal wedding wajib diisi</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi Wedding <span class="required">*</span></label>
+                        <input type="text" id="weddingLocation" placeholder="Nama venue / kota" required />
+                        <div class="form-error">Lokasi wajib diisi</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Paket <span class="required">*</span></label>
+                    <select id="selectedPackage" required>
+                        <option value="">— Pilih paket —</option>
+                    </select>
+                    <div class="form-error">Pilih paket terlebih dahulu</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Add-on</label>
+                    <select id="selectedAddon">
+                        <option value="none">Tanpa add-on</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Catatan (opsional)</label>
+                    <textarea id="clientNote" placeholder="Tambahkan permintaan khusus …" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Kirim Booking</button>
+                    <button type="button" class="btn-outline" id="modalCancelBtn">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== INVOICE PAGE ====== -->
+    <section id="invoicePage">
+        <div class="container">
+            <div class="invoice-container" id="invoiceContainer">
+                <!-- di-render oleh JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== SUCCESS TOAST ====== -->
+    <div class="success-toast" id="successToast">
+        ✅ Booking berhasil! Invoice telah dibuat.
+    </div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // 1. DATA DUMMY — mudah diubah
+            // ============================================================
+
+            const PACKAGES = [{
+                id: 'basic',
+                name: 'Basic',
+                price: 8000000,
+                desc: 'Dokumentasi esensial dengan gaya natural.',
+                features: ['Fotografi 6 jam', '1 fotografer', '100+ foto diedit', 'Gallery online'],
+                popular: false,
+            }, {
+                id: 'standard',
+                name: 'Standard',
+                price: 15000000,
+                desc: 'Kombinasi sempurna antara kualitas &amp; nilai.',
+                features: ['Fotografi 10 jam', '2 fotografer', '300+ foto diedit', 'Gallery online',
+                    'Cetak album 20 halaman'
+                ],
+                popular: true,
+            }, {
+                id: 'premium',
+                name: 'Premium',
+                price: 25000000,
+                desc: 'Pengalaman penuh sinematik untuk hari istimewa.',
+                features: ['Fotografi 14 jam', '3 fotografer', '500+ foto diedit', 'Gallery online',
+                    'Cetak album 40 halaman', 'Video highlight 3 menit'
+                ],
+                popular: false,
+            }];
+
+            const ADDONS = [{
+                id: 'video',
+                label: 'Video Highlight (3 menit)',
+                price: 3000000,
+            }, {
+                id: 'album',
+                label: 'Album Cetak Premium (40 halaman)',
+                price: 2000000,
+            }, {
+                id: 'drone',
+                label: 'Drone Shot (30 menit)',
+                price: 1500000,
+            }];
+
+            const DP_PERCENT = 50; // 50% DP
+            const COMPANY_NAME = 'Zero Pictura';
+            const COMPANY_TAGLINE = 'Wedding Photography';
+
+            // Kontak (mudah diganti)
+            const CONTACT = {
+                phone: '+62 812 3456 7890',
+                email: 'hello@zeropictura.com',
+                instagram: '@zeropictura',
+            };
+
+            // ============================================================
+            // 2. STATE
+            // ============================================================
+
+            let currentInvoice = null; // objek invoice terakhir
+            let selectedPackageId = null; // untuk pre-fill dari tombol
+
+            // ============================================================
+            // 3. DOM REFS
+            // ============================================================
+
+            const packagesGrid = document.getElementById('packagesGrid');
+            const bookingModal = document.getElementById('bookingModal');
+            const bookingForm = document.getElementById('bookingForm');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const heroBookingBtn = document.getElementById('heroBookingBtn');
+            const navBookingBtn = document.getElementById('navBookingBtn');
+            const invoicePage = document.getElementById('invoicePage');
+            const invoiceContainer = document.getElementById('invoiceContainer');
+            const successToast = document.getElementById('successToast');
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+
+            // Form fields
+            const clientName = document.getElementById('clientName');
+            const clientWhatsapp = document.getElementById('clientWhatsapp');
+            const clientEmail = document.getElementById('clientEmail');
+            const weddingDate = document.getElementById('weddingDate');
+            const weddingLocation = document.getElementById('weddingLocation');
+            const selectedPackage = document.getElementById('selectedPackage');
+            const selectedAddon = document.getElementById('selectedAddon');
+            const clientNote = document.getElementById('clientNote');
+
+            // ============================================================
+            // 4. HELPERS
+            // ============================================================
+
+            function formatRupiah(num) {
+                return 'Rp ' + num.toLocaleString('id-ID');
+            }
+
+            function generateInvoiceNumber() {
+                const now = new Date();
+                const y = now.getFullYear();
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const d = String(now.getDate()).padStart(2, '0');
+                const seq = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+                return `ZP/INV/${y}${m}${d}/${seq}`;
+            }
+
+            function formatDateInput(dateStr) {
+                if (!dateStr) return '-';
+                const d = new Date(dateStr + 'T00:00:00');
+                return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+
+            function getTodayStr() {
+                const d = new Date();
+                return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+
+            // ============================================================
+            // 5. RENDER PACKAGES & FORM OPTIONS
+            // ============================================================
+
+            function renderPackages() {
+                packagesGrid.innerHTML = PACKAGES.map(pkg => `
+                    <div class="package-card ${pkg.popular ? 'popular' : ''}">
+                        ${pkg.popular ? '<span class="popular-badge">Best Value</span>' : ''}
+                        <div class="package-name">${pkg.name}</div>
+                        <div class="package-price">${formatRupiah(pkg.price)} <small>/ paket</small></div>
+                        <div class="package-desc">${pkg.desc}</div>
+                        <ul class="package-features">
+                            ${pkg.features.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                        <button class="btn-primary" data-package="${pkg.id}">Book Now</button>
+                    </div>
+                `).join('');
+
+                // Event listener untuk tombol Book Now di cards
+                packagesGrid.querySelectorAll('[data-package]').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        const pkgId = this.dataset.package;
+                        openBookingForm(pkgId);
+                    });
+                });
+            }
+
+            function populateFormOptions() {
+                // Paket
+                selectedPackage.innerHTML = '<option value="">— Pilih paket —</option>' +
+                    PACKAGES.map(p => `<option value="${p.id}">${p.name} — ${formatRupiah(p.price)}</option>`).join('');
+
+                // Add-on
+                selectedAddon.innerHTML = '<option value="none">Tanpa add-on</option>' +
+                    ADDONS.map(a => `<option value="${a.id}">${a.label} — ${formatRupiah(a.price)}</option>`).join('');
+            }
+
+            // ============================================================
+            // 6. MODAL / FORM
+            // ============================================================
+
+            function openBookingForm(packageId) {
+                // Reset error states
+                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+
+                // Pre-select package jika ada
+                if (packageId) {
+                    selectedPackage.value = packageId;
+                    selectedPackageId = packageId;
+                } else {
+                    selectedPackage.value = '';
+                    selectedPackageId = null;
+                }
+
+                // Set default tanggal besok
+                if (!weddingDate.value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    weddingDate.value = tomorrow.toISOString().split('T')[0];
+                }
+
+                bookingModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                // Fokus ke field pertama
+                setTimeout(() => clientName.focus(), 200);
+            }
+
+            function closeBookingForm() {
+                bookingModal.classList.remove('active');
+                document.body.style.overflow = '';
+                // Reset error visual
+                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+            }
+
+            // ============================================================
+            // 7. VALIDASI
+            // ============================================================
+
+            function validateForm() {
+                let valid = true;
+
+                // Reset error
+                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+
+                const fields = [
+                    { el: clientName, msg: 'Nama wajib diisi' },
+                    { el: clientWhatsapp, msg: 'WhatsApp wajib diisi' },
+                    { el: clientEmail, msg: 'Email wajib diisi dengan format benar' },
+                    { el: weddingDate, msg: 'Tanggal wedding wajib diisi' },
+                    { el: weddingLocation, msg: 'Lokasi wajib diisi' },
+                ];
+
+                fields.forEach(f => {
+                    const val = f.el.value.trim();
+                    if (!val) {
+                        f.el.closest('.form-group').classList.add('error');
+                        valid = false;
+                    }
+                });
+
+                // Email format
+                const email = clientEmail.value.trim();
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    clientEmail.closest('.form-group').classList.add('error');
+                    valid = false;
+                }
+
+                // Paket
+                if (!selectedPackage.value) {
+                    selectedPackage.closest('.form-group').classList.add('error');
+                    valid = false;
+                }
+
+                return valid;
+            }
+
+            // ============================================================
+            // 8. GENERATE INVOICE
+            // ============================================================
+
+            function generateInvoice(formData) {
+                const pkg = PACKAGES.find(p => p.id === formData.packageId);
+                const addon = ADDONS.find(a => a.id === formData.addonId);
+
+                const subtotal = pkg.price + (addon ? addon.price : 0);
+                const dp = Math.round(subtotal * DP_PERCENT / 100);
+                const sisa = subtotal - dp;
+
+                const invoice = {
+                    number: generateInvoiceNumber(),
+                    date: getTodayStr(),
+                    clientName: formData.clientName,
+                    clientWhatsapp: formData.clientWhatsapp,
+                    clientEmail: formData.clientEmail,
+                    weddingDate: formatDateInput(formData.weddingDate),
+                    weddingLocation: formData.weddingLocation,
+                    packageName: pkg.name,
+                    packagePrice: pkg.price,
+                    addonName: addon ? addon.label : '-',
+                    addonPrice: addon ? addon.price : 0,
+                    subtotal: subtotal,
+                    dp: dp,
+                    sisa: sisa,
+                    note: formData.note || '-',
+                    status: 'Menunggu DP', // atau 'Lunas' jika mau
+                };
+
+                return invoice;
+            }
+
+            // ============================================================
+            // 9. RENDER INVOICE + PDF
+            // ============================================================
+
+            function renderInvoice(invoice) {
+                const html = `
+                    <div class="invoice-header">
+                        <div>
+                            <div class="invoice-brand">${COMPANY_NAME} <span>✦</span>
+                                <span class="tag">${COMPANY_TAGLINE}</span>
+                            </div>
+                            <div style="margin-top:6px;font-size:0.8rem;color:#888;">
+                                ${CONTACT.phone} · ${CONTACT.email} · ${CONTACT.instagram}
+                            </div>
+                        </div>
+                        <div class="invoice-meta">
+                            <div class="number">${invoice.number}</div>
+                            <div class="date">${invoice.date}</div>
+                        </div>
+                    </div>
+
+                    <div class="invoice-grid">
+                        <div>
+                            <div class="field">Client</div>
+                            <div class="value">${invoice.clientName}</div>
+                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${invoice.clientWhatsapp} · ${invoice.clientEmail}</div>
+                        </div>
+                        <div>
+                            <div class="field">Wedding</div>
+                            <div class="value">${invoice.weddingDate}</div>
+                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${invoice.weddingLocation}</div>
+                        </div>
+                    </div>
+
+                    <table class="invoice-table">
+                        <thead>
+                            <tr><th>Deskripsi</th><th style="text-align:right;">Harga</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Paket ${invoice.packageName}</td>
+                                <td class="amount">${formatRupiah(invoice.packagePrice)}</td>
+                            </tr>
+                            ${invoice.addonName !== '-' ? `
+                            <tr>
+                                <td>Add-on: ${invoice.addonName}</td>
+                                <td class="amount">${formatRupiah(invoice.addonPrice)}</td>
+                            </tr>
+                            ` : ''}
+                            <tr class="total-row">
+                                <td><strong>Subtotal</strong></td>
+                                <td class="amount">${formatRupiah(invoice.subtotal)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="invoice-summary">
+                        <div>
+                            <div style="font-size:0.8rem;color:#888;">DP (${DP_PERCENT}%)</div>
+                            <div style="font-size:1.2rem;font-weight:600;color:var(--gold-dark);">${formatRupiah(invoice.dp)}</div>
+                            <div style="font-size:0.8rem;color:#888;margin-top:4px;">Sisa pembayaran</div>
+                            <div style="font-size:1.1rem;font-weight:500;">${formatRupiah(invoice.sisa)}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="status">${invoice.status}</div>
+                            <div style="margin-top:12px;">
+                                <span class="total-label">Total</span>
+                                <div class="total-value">${formatRupiah(invoice.subtotal)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${invoice.note && invoice.note !== '-' ? `
+                    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e0ddd8;font-size:0.85rem;color:#555;">
+                        <strong>Catatan:</strong> ${invoice.note}
+                    </div>
+                    ` : ''}
+
+                    <div style="margin-top:24px;font-size:0.7rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:16px;">
+                        Terima kasih telah mempercayai ${COMPANY_NAME} · Invoice ini dibuat secara otomatis.
+                    </div>
+                `;
+
+                invoiceContainer.innerHTML = html;
+                currentInvoice = invoice;
+
+                // Tampilkan halaman invoice
+                document.getElementById('hero').style.display = 'none';
+                document.getElementById('packages').style.display = 'none';
+                invoicePage.classList.add('active');
+
+                // Scroll ke atas invoice
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // ============================================================
+            // 10. DOWNLOAD PDF
+            // ============================================================
+
+            async function downloadInvoicePDF() {
+                const container = document.getElementById('invoiceContainer');
+                if (!container) return;
+
+                // Tampilkan loading (opsional)
+                const btn = document.querySelector('.invoice-actions .btn-primary');
+                if (btn) {
+                    btn.textContent = 'Memproses...';
+                    btn.disabled = true;
+                }
+
+                try {
+                    // Capture container dengan html2canvas
+                    const canvas = await html2canvas(container, {
+                        scale: 2,
+                        backgroundColor: '#fcf9f5',
+                        logging: false,
+                        useCORS: true,
+                    });
+
+                    const imgData = canvas.toDataURL('image/png');
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.save(`Invoice_${currentInvoice.number}.pdf`);
+
+                } catch (err) {
+                    console.error('PDF error:', err);
+                    alert('Gagal generate PDF. Silakan coba lagi.');
+                } finally {
+                    if (btn) {
+                        btn.textContent = 'Download Invoice PDF';
+                        btn.disabled = false;
+                    }
+                }
+            }
+
+            // ============================================================
+            // 11. HANDLE FORM SUBMIT
+            // ============================================================
+
+            bookingForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (!validateForm()) {
+                    // Scroll ke error pertama
+                    const firstError = document.querySelector('.form-group.error input, .form-group.error select');
+                    if (firstError) firstError.focus();
+                    return;
+                }
+
+                // Kumpulkan data
+                const formData = {
+                    clientName: clientName.value.trim(),
+                    clientWhatsapp: clientWhatsapp.value.trim(),
+                    clientEmail: clientEmail.value.trim(),
+                    weddingDate: weddingDate.value,
+                    weddingLocation: weddingLocation.value.trim(),
+                    packageId: selectedPackage.value,
+                    addonId: selectedAddon.value,
+                    note: clientNote.value.trim(),
+                };
+
+                // Generate invoice
+                const invoice = generateInvoice(formData);
+
+                // Simpan ke localStorage
+                try {
+                    const history = JSON.parse(localStorage.getItem('zeroPictura_bookings') || '[]');
+                    history.push({ ...invoice, createdAt: new Date().toISOString() });
+                    localStorage.setItem('zeroPictura_bookings', JSON.stringify(history));
+                } catch (_) { /* ignore */ }
+
+                // Tutup modal
+                closeBookingForm();
+
+                // Tampilkan invoice
+                renderInvoice(invoice);
+
+                // Tambahkan tombol download PDF ke invoice-actions
+                const actionsDiv = invoiceContainer.querySelector('.invoice-actions');
+                if (!actionsDiv) {
+                    // Jika belum ada, buat div actions
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'invoice-actions';
+                    wrapper.innerHTML = `
+                        <button class="btn-primary" id="downloadPdfBtn">Download Invoice PDF</button>
+                        <button class="btn-outline" id="backToHomeBtn">Kembali ke Beranda</button>
+                    `;
+                    invoiceContainer.appendChild(wrapper);
+                } else {
+                    actionsDiv.innerHTML = `
+                        <button class="btn-primary" id="downloadPdfBtn">Download Invoice PDF</button>
+                        <button class="btn-outline" id="backToHomeBtn">Kembali ke Beranda</button>
+                    `;
+                }
+
+                // Event listener download
+                document.getElementById('downloadPdfBtn').addEventListener('click', downloadInvoicePDF);
+
+                // Event listener back to home
+                document.getElementById('backToHomeBtn').addEventListener('click', function() {
+                    resetToHome();
+                });
+
+                // Tampilkan toast sukses
+                successToast.querySelector('strong')?.remove();
+                successToast.innerHTML = '✅ Booking berhasil! Invoice <strong>' + invoice.number +
+                    '</strong> telah dibuat.';
+                successToast.classList.add('show');
+                setTimeout(() => successToast.classList.remove('show'), 5000);
+            });
+
+            // ============================================================
+            // 12. RESET KE HOME
+            // ============================================================
+
+            function resetToHome() {
+                invoicePage.classList.remove('active');
+                document.getElementById('hero').style.display = 'flex';
+                document.getElementById('packages').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Reset form (opsional)
+                bookingForm.reset();
+                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
+                // Reset invoice container
+                invoiceContainer.innerHTML = '';
+                currentInvoice = null;
+            }
+
+            // ============================================================
+            // 13. EVENT LISTENERS — MODAL
+            // ============================================================
+
+            modalCloseBtn.addEventListener('click', closeBookingForm);
+            modalCancelBtn.addEventListener('click', closeBookingForm);
+
+            // Klik overlay (background) untuk tutup
+            bookingModal.addEventListener('click', function(e) {
+                if (e.target === this) closeBookingForm();
+            });
+
+            // Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && bookingModal.classList.contains('active')) {
+                    closeBookingForm();
+                }
+            });
+
+            // Tombol booking dari hero & nav
+            heroBookingBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openBookingForm(null);
+            });
+            navBookingBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openBookingForm(null);
+            });
+
+            // ============================================================
+            // 14. HAMBURGER
+            // ============================================================
+
+            hamburger.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+            });
+
+            // Tutup nav saat link diklik (mobile)
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => navLinks.classList.remove('open'));
+            });
+
+            // ============================================================
+            // 15. INISIALISASI
+            // ============================================================
+
+            renderPackages();
+            populateFormOptions();
+
+            // Sembunyikan invoice page awal
+            invoicePage.classList.remove('active');
+
+            // Jika ada booking di URL? tidak perlu.
+
+            console.log('Zero Pictura V1 siap!');
+            console.log('📦 Paket:', PACKAGES);
+            console.log('🧩 Add-on:', ADDONS);
+            console.log('📞 Kontak:', CONTACT);
+
+        })();
+    </script>
+
+</body>
+</html>
