@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- html2canvas + jsPDF for PDF -->
+    <!-- html2canvas + jsPDF for PDF (tetap disertakan untuk invoice jika diperlukan) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -141,7 +141,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            padding: 18px 0;
+            padding: 14px 0;
             background: rgba(14, 14, 14, 0.85);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(201, 168, 76, 0.08);
@@ -155,14 +155,27 @@
         }
 
         .logo {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .logo .brand {
             font-family: var(--font-serif);
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             color: var(--text);
         }
-        .logo span {
+        .logo .brand span {
             color: var(--gold);
+        }
+        .logo .tagline {
+            font-family: var(--font-serif);
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            margin-top: 2px;
         }
 
         .nav-links {
@@ -633,7 +646,7 @@
             display: block;
         }
 
-        /* ----- INVOICE PAGE ----- */
+        /* ----- INVOICE PAGE (tetap untuk demo) ----- */
         #invoicePage {
             display: none;
             padding: 120px 0 80px;
@@ -778,9 +791,6 @@
             letter-spacing: 1px;
             padding: 4px 20px;
             border-radius: 50px;
-        }
-        .invoice-summary .status.paid {
-            background: #2ecc71;
         }
         .invoice-summary .total-label {
             font-weight: 500;
@@ -985,7 +995,10 @@
     <!-- ====== NAVBAR ====== -->
     <nav class="navbar" id="navbar">
         <div class="container">
-            <div class="logo">Zero<span>Pictura</span></div>
+            <div class="logo">
+                <span class="brand">ZERO<span>PICTURA</span></span>
+                <span class="tagline">Love and Memories Sessions</span>
+            </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#packages">Paket</a></li>
                 <li><a href="#" id="navBookingBtn" class="btn-outline" style="padding:8px 24px;font-size:0.75rem;">Booking</a></li>
@@ -1170,25 +1183,25 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Kirim Booking</button>
+                    <button type="submit" class="btn-primary">Kirim via WhatsApp</button>
                     <button type="button" class="btn-outline" id="modalCancelBtn">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ====== INVOICE PAGE ====== -->
+    <!-- ====== INVOICE PAGE (tetap untuk demo, tapi tidak digunakan dalam alur utama) ====== -->
     <section id="invoicePage">
         <div class="container">
             <div class="invoice-container" id="invoiceContainer">
-                <!-- di-render oleh JS -->
+                <!-- di-render oleh JS jika diperlukan -->
             </div>
         </div>
     </section>
 
     <!-- ====== SUCCESS TOAST ====== -->
     <div class="success-toast" id="successToast">
-        ✅ Booking berhasil! Invoice telah dibuat.
+        ✅ Booking berhasil! Pesan akan dikirim via WhatsApp.
     </div>
 
     <!-- ====== JAVASCRIPT ====== -->
@@ -1273,13 +1286,15 @@
 
             const DP_PERCENT = 50; // 50% DP
             const COMPANY_NAME = 'Zero Pictura';
-            const COMPANY_TAGLINE = 'Wedding Photography';
+            const COMPANY_TAGLINE = 'Love and Memories Sessions';
 
             const CONTACT = {
-                phone: '+62 8249 996 550',
+                phone: '+62 8249 996 550', // nomor WhatsApp
                 email: 'zeropictura@gmail.com',
                 instagram: '@zeropictura',
             };
+
+            const WA_NUMBER = '6281249996550'; // untuk redirect
 
             // ============================================================
             // 2. STATE
@@ -1496,7 +1511,7 @@
             }
 
             // ============================================================
-            // 8. GENERATE INVOICE
+            // 8. GENERATE INVOICE (untuk data & WhatsApp)
             // ============================================================
 
             function generateInvoice(formData) {
@@ -1538,157 +1553,45 @@
             }
 
             // ============================================================
-            // 9. RENDER INVOICE + PDF
+            // 9. KIRIM VIA WHATSAPP
             // ============================================================
 
-            function renderInvoice(invoice) {
-                const addonRows = invoice.addons.map(a =>
-                    `<tr><td>Add‑on: ${a.label}</td><td class="amount">${formatRupiah(a.price)}</td></tr>`
-                ).join('');
+            function sendToWhatsApp(invoice) {
+                // Susun pesan
+                let message = `Halo Zero Pictura,%0A%0ASaya ingin melakukan booking dengan detail:%0A%0A`;
+                message += `Nama Pasangan: ${invoice.clientName}%0A`;
+                message += `Posisi/Angle: ${invoice.photoAngle}%0A`;
+                message += `Paket: ${invoice.packageName} (${formatRupiah(invoice.packagePrice)})%0A`;
+                message += `Venue: ${invoice.venue}%0A`;
+                message += `Jumlah Tamu: ${invoice.guestCount} undangan%0A`;
+                message += `Alamat: ${invoice.address}${invoice.gang !== '-' ? ` (Gang ${invoice.gang})` : ''}%0A`;
+                message += `Patokan: ${invoice.landmark}%0A`;
+                message += `Rumah atas nama: ${invoice.houseOwner}%0A`;
+                message += `Tanggal: ${invoice.weddingDate}%0A`;
+                message += `Jam: ${invoice.eventTime}%0A`;
+                message += `Instagram: ${invoice.instagram}%0A`;
+                message += `Bridesmaid/Groomsmen: ${invoice.bridesmaidCount} orang%0A`;
+                message += `Shareloc: ${invoice.shareloc}%0A`;
 
-                const html = `
-                    <div class="invoice-header">
-                        <div>
-                            <div class="invoice-brand">${COMPANY_NAME} <span>✦</span>
-                                <span class="tag">${COMPANY_TAGLINE}</span>
-                            </div>
-                            <div style="margin-top:6px;font-size:0.8rem;color:#888;">
-                                ${CONTACT.phone} · ${CONTACT.email} · ${CONTACT.instagram}
-                            </div>
-                        </div>
-                        <div class="invoice-meta">
-                            <div class="number">${invoice.number}</div>
-                            <div class="date">${invoice.date}</div>
-                        </div>
-                    </div>
-
-                    <div class="invoice-grid">
-                        <div>
-                            <div class="field">Pasangan</div>
-                            <div class="value">${invoice.clientName}</div>
-                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">Angle: ${invoice.photoAngle}</div>
-                        </div>
-                        <div>
-                            <div class="field">Paket</div>
-                            <div class="value">${invoice.packageName}</div>
-                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${formatRupiah(invoice.packagePrice)}</div>
-                        </div>
-                        <div>
-                            <div class="field">Venue</div>
-                            <div class="value">${invoice.venue}</div>
-                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">Tamu: ${invoice.guestCount} undangan</div>
-                        </div>
-                        <div>
-                            <div class="field">Tanggal & Jam</div>
-                            <div class="value">${invoice.weddingDate} · ${invoice.eventTime}</div>
-                        </div>
-                        <div class="full-width">
-                            <div class="field">Alamat</div>
-                            <div class="value">${invoice.address} ${invoice.gang !== '-' ? `(Gang ${invoice.gang})` : ''}</div>
-                            <div style="font-size:0.85rem;color:#555;">Patokan: ${invoice.landmark} · Rumah atas nama ${invoice.houseOwner}</div>
-                        </div>
-                        <div>
-                            <div class="field">Instagram</div>
-                            <div class="value">${invoice.instagram}</div>
-                        </div>
-                        <div>
-                            <div class="field">Bridesmaid/Groomsmen</div>
-                            <div class="value">${invoice.bridesmaidCount} orang</div>
-                        </div>
-                        <div class="full-width">
-                            <div class="field">Shareloc</div>
-                            <div class="value">${invoice.shareloc}</div>
-                        </div>
-                    </div>
-
-                    <table class="invoice-table">
-                        <thead><tr><th>Deskripsi</th><th style="text-align:right;">Harga</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>Paket ${invoice.packageName}</td>
-                                <td class="amount">${formatRupiah(invoice.packagePrice)}</td>
-                            </tr>
-                            ${addonRows}
-                            <tr class="total-row">
-                                <td><strong>Subtotal</strong></td>
-                                <td class="amount">${formatRupiah(invoice.subtotal)}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="invoice-summary">
-                        <div>
-                            <div style="font-size:0.8rem;color:#888;">DP (${DP_PERCENT}%)</div>
-                            <div style="font-size:1.2rem;font-weight:600;color:var(--gold-dark);">${formatRupiah(invoice.dp)}</div>
-                            <div style="font-size:0.8rem;color:#888;margin-top:4px;">Sisa pembayaran</div>
-                            <div style="font-size:1.1rem;font-weight:500;">${formatRupiah(invoice.sisa)}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div class="status">${invoice.status}</div>
-                            <div style="margin-top:12px;">
-                                <span class="total-label">Total</span>
-                                <div class="total-value">${formatRupiah(invoice.subtotal)}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    ${invoice.note && invoice.note !== '-' ? `
-                    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e0ddd8;font-size:0.85rem;color:#555;">
-                        <strong>Catatan:</strong> ${invoice.note}
-                    </div>
-                    ` : ''}
-
-                    <div style="margin-top:24px;font-size:0.7rem;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:16px;">
-                        Terima kasih telah mempercayai ${COMPANY_NAME} · Invoice ini dibuat secara otomatis.
-                    </div>
-                `;
-
-                invoiceContainer.innerHTML = html;
-                currentInvoice = invoice;
-
-                document.getElementById('hero').style.display = 'none';
-                document.getElementById('packages').style.display = 'none';
-                invoicePage.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-
-            // ============================================================
-            // 10. DOWNLOAD PDF
-            // ============================================================
-
-            async function downloadInvoicePDF() {
-                const container = document.getElementById('invoiceContainer');
-                if (!container) return;
-
-                const btn = document.querySelector('.invoice-actions .btn-primary');
-                if (btn) { btn.textContent = 'Memproses...';
-                    btn.disabled = true; }
-
-                try {
-                    const canvas = await html2canvas(container, {
-                        scale: 2,
-                        backgroundColor: '#fcf9f5',
-                        logging: false,
-                        useCORS: true,
-                    });
-                    const imgData = canvas.toDataURL('image/png');
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`Invoice_${currentInvoice.number}.pdf`);
-                } catch (err) {
-                    console.error('PDF error:', err);
-                    alert('Gagal generate PDF. Silakan coba lagi.');
-                } finally {
-                    if (btn) { btn.textContent = 'Download Invoice PDF';
-                        btn.disabled = false; }
+                if (invoice.addons.length > 0) {
+                    message += `Add-on: ${invoice.addons.map(a => a.label).join(', ')}%0A`;
+                } else {
+                    message += `Add-on: -%0A`;
                 }
+
+                if (invoice.note && invoice.note !== '-') {
+                    message += `Catatan: ${invoice.note}%0A`;
+                }
+
+                message += `%0ATerima kasih.`;
+
+                // Redirect ke WhatsApp
+                const waUrl = `https://wa.me/${WA_NUMBER}?text=${message}`;
+                window.open(waUrl, '_blank');
             }
 
             // ============================================================
-            // 11. HANDLE FORM SUBMIT
+            // 10. HANDLE FORM SUBMIT
             // ============================================================
 
             bookingForm.addEventListener('submit', function(e) {
@@ -1726,61 +1629,36 @@
                     note: clientNote.value.trim(),
                 };
 
+                // Generate invoice
                 const invoice = generateInvoice(formData);
+                currentInvoice = invoice;
 
+                // Simpan ke localStorage
                 try {
                     const history = JSON.parse(localStorage.getItem('zeroPictura_bookings') || '[]');
                     history.push({ ...invoice, createdAt: new Date().toISOString() });
                     localStorage.setItem('zeroPictura_bookings', JSON.stringify(history));
                 } catch (_) { /* ignore */ }
 
+                // Tutup modal
                 closeBookingForm();
-                renderInvoice(invoice);
 
-                // Tambahkan tombol aksi di invoice
-                const actionsDiv = invoiceContainer.querySelector('.invoice-actions');
-                if (!actionsDiv) {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'invoice-actions';
-                    wrapper.innerHTML = `
-                        <button class="btn-primary" id="downloadPdfBtn">Download Invoice PDF</button>
-                        <button class="btn-outline" id="backToHomeBtn">Kembali ke Beranda</button>
-                    `;
-                    invoiceContainer.appendChild(wrapper);
-                } else {
-                    actionsDiv.innerHTML = `
-                        <button class="btn-primary" id="downloadPdfBtn">Download Invoice PDF</button>
-                        <button class="btn-outline" id="backToHomeBtn">Kembali ke Beranda</button>
-                    `;
-                }
+                // Kirim ke WhatsApp
+                sendToWhatsApp(invoice);
 
-                document.getElementById('downloadPdfBtn').addEventListener('click', downloadInvoicePDF);
-                document.getElementById('backToHomeBtn').addEventListener('click', resetToHome);
-
-                successToast.innerHTML = '✅ Booking berhasil! Invoice <strong>' + invoice.number +
-                    '</strong> telah dibuat.';
+                // Tampilkan toast sukses
+                successToast.innerHTML = '✅ Booking berhasil! Pesan telah dikirim ke WhatsApp.';
                 successToast.classList.add('show');
-                setTimeout(() => successToast.classList.remove('show'), 5000);
+                setTimeout(() => successToast.classList.remove('show'), 6000);
+
+                // Reset form
+                bookingForm.reset();
+                gangGroup.classList.remove('visible');
+                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
             });
 
             // ============================================================
-            // 12. RESET KE HOME
-            // ============================================================
-
-            function resetToHome() {
-                invoicePage.classList.remove('active');
-                document.getElementById('hero').style.display = 'flex';
-                document.getElementById('packages').style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                bookingForm.reset();
-                document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
-                invoiceContainer.innerHTML = '';
-                currentInvoice = null;
-                gangGroup.classList.remove('visible');
-            }
-
-            // ============================================================
-            // 13. EVENT LISTENERS — MODAL
+            // 11. EVENT LISTENERS — MODAL
             // ============================================================
 
             modalCloseBtn.addEventListener('click', closeBookingForm);
@@ -1804,7 +1682,7 @@
             });
 
             // ============================================================
-            // 14. HAMBURGER
+            // 12. HAMBURGER
             // ============================================================
 
             hamburger.addEventListener('click', function() {
@@ -1815,17 +1693,17 @@
             });
 
             // ============================================================
-            // 15. INISIALISASI
+            // 13. INISIALISASI
             // ============================================================
 
             renderPackages();
             populateFormOptions();
             invoicePage.classList.remove('active');
 
-            console.log('Zero Pictura V1 (dengan form lengkap) siap!');
+            console.log('Zero Pictura V1 — WhatsApp Integration siap!');
             console.log('📦 Paket:', PACKAGES);
             console.log('🧩 Add-on:', ADDONS);
-            console.log('📞 Kontak:', CONTACT);
+            console.log('📞 WhatsApp:', WA_NUMBER);
 
         })();
     </script>
