@@ -470,7 +470,7 @@
         .modal {
             background: var(--dark-card);
             border-radius: 16px;
-            max-width: 640px;
+            max-width: 720px;
             width: 100%;
             padding: 48px 40px 40px;
             position: relative;
@@ -597,6 +597,42 @@
             flex: 0 0 auto;
         }
 
+        /* checkbox addon */
+        .addon-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-top: 4px;
+        }
+        .addon-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-transform: none;
+            color: var(--text);
+            cursor: pointer;
+        }
+        .addon-checkboxes input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+        .addon-checkboxes .addon-price {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* conditional gang */
+        .gang-group {
+            display: none;
+        }
+        .gang-group.visible {
+            display: block;
+        }
+
         /* ----- INVOICE PAGE ----- */
         #invoicePage {
             display: none;
@@ -666,11 +702,11 @@
         .invoice-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
+            gap: 16px 32px;
             margin-bottom: 28px;
         }
         .invoice-grid .field {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #888;
@@ -680,6 +716,9 @@
             font-size: 1rem;
             font-weight: 500;
             color: #1a1a1a;
+        }
+        .invoice-grid .full-width {
+            grid-column: 1 / -1;
         }
 
         .invoice-table {
@@ -778,7 +817,7 @@
             border-color: #888;
         }
 
-        /* ----- SUCCESS OVERLAY (mini) ----- */
+        /* ----- SUCCESS TOAST ----- */
         .success-toast {
             display: none;
             position: fixed;
@@ -921,7 +960,6 @@
             }
         }
 
-        /* ----- UTILITY ----- */
         .text-gold {
             color: var(--gold);
         }
@@ -964,7 +1002,7 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge">— Wedding Photography</div>
-                <h1>Abadikan <span>momen</span> terindahmu</h1>
+                <h1>Bercerita <span>Tanpa</span> Kata‑kata</h1>
                 <p>
                     Zero Pictura menghadirkan gaya sinematik &amp; elegan untuk
                     hari pernikahanmu. Setiap bingkai adalah cerita.
@@ -999,57 +1037,133 @@
     <div class="modal-overlay" id="bookingModal">
         <div class="modal">
             <button class="modal-close" id="modalCloseBtn" aria-label="Tutup form">✕</button>
-            <h2>Booking</h2>
+            <h2>Formulir Pemesanan</h2>
             <p class="sub">Isi data berikut untuk memesan paket fotografi.</p>
 
             <form id="bookingForm" novalidate>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Lengkap <span class="required">*</span></label>
-                        <input type="text" id="clientName" placeholder="Nama lengkap" required />
-                        <div class="form-error">Nama wajib diisi</div>
-                    </div>
-                    <div class="form-group">
-                        <label>WhatsApp <span class="required">*</span></label>
-                        <input type="tel" id="clientWhatsapp" placeholder="08xxxxxxxxxx" required />
-                        <div class="form-error">Nomor WhatsApp wajib diisi</div>
-                    </div>
-                </div>
-
+                <!-- Nama pasangan -->
                 <div class="form-group">
-                    <label>Email <span class="required">*</span></label>
-                    <input type="email" id="clientEmail" placeholder="email@domain.com" required />
-                    <div class="form-error">Email wajib diisi dengan format yang benar</div>
+                    <label>Nama masing‑masing pasangan <span class="required">*</span></label>
+                    <input type="text" id="clientName" placeholder="Contoh: Andi &amp; Rini" required />
+                    <div class="form-error">Nama pasangan wajib diisi</div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tanggal Wedding <span class="required">*</span></label>
-                        <input type="date" id="weddingDate" required />
-                        <div class="form-error">Tanggal wedding wajib diisi</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Lokasi Wedding <span class="required">*</span></label>
-                        <input type="text" id="weddingLocation" placeholder="Nama venue / kota" required />
-                        <div class="form-error">Lokasi wajib diisi</div>
-                    </div>
-                </div>
-
+                <!-- Posisi angel foto -->
                 <div class="form-group">
-                    <label>Paket <span class="required">*</span></label>
+                    <label>Posisi / Angle foto <span class="required">*</span></label>
+                    <input type="text" id="photoAngle" placeholder="Misal: natural, candid, formal" required />
+                    <div class="form-error">Posisi/angle foto wajib diisi</div>
+                </div>
+
+                <!-- Paket -->
+                <div class="form-group">
+                    <label>Paket yang di booking <span class="required">*</span></label>
                     <select id="selectedPackage" required>
                         <option value="">— Pilih paket —</option>
                     </select>
                     <div class="form-error">Pilih paket terlebih dahulu</div>
                 </div>
 
+                <!-- Venue -->
                 <div class="form-group">
-                    <label>Add-on</label>
-                    <select id="selectedAddon">
-                        <option value="none">Tanpa add-on</option>
+                    <label>Venue <span class="required">*</span></label>
+                    <select id="venue" required>
+                        <option value="">— Pilih —</option>
+                        <option value="Rumah">Rumah</option>
+                        <option value="Gedung">Gedung</option>
                     </select>
+                    <div class="form-error">Pilih venue</div>
                 </div>
 
+                <!-- Jumlah tamu -->
+                <div class="form-group">
+                    <label>Banyaknya Tamu Undangan <span class="required">*</span></label>
+                    <input type="number" id="guestCount" placeholder="500" required />
+                    <div class="form-error">Jumlah tamu wajib diisi</div>
+                </div>
+
+                <!-- Alamat -->
+                <div class="form-group">
+                    <label>Alamat <span class="required">*</span></label>
+                    <input type="text" id="address" placeholder="Jl. ..." required />
+                    <div class="form-error">Alamat wajib diisi</div>
+                </div>
+
+                <!-- Masuk gang -->
+                <div class="form-group">
+                    <label>Masuk gang <span class="required">*</span></label>
+                    <select id="gangSelect" required>
+                        <option value="">— Pilih —</option>
+                        <option value="Ya">Ya</option>
+                        <option value="Tidak">Tidak</option>
+                    </select>
+                    <div class="form-error">Pilih ya/tidak</div>
+                </div>
+
+                <div class="form-group gang-group" id="gangGroup">
+                    <label>Nama Gang <span class="required">*</span></label>
+                    <input type="text" id="gangName" placeholder="Nama gang" />
+                    <div class="form-error">Nama gang wajib diisi</div>
+                </div>
+
+                <!-- Patokan -->
+                <div class="form-group">
+                    <label>Patokan <span class="required">*</span></label>
+                    <input type="text" id="landmark" placeholder="Dekat ..." required />
+                    <div class="form-error">Patokan wajib diisi</div>
+                </div>
+
+                <!-- Rumah atas nama ortu -->
+                <div class="form-group">
+                    <label>Rumah atas nama ortu <span class="required">*</span></label>
+                    <input type="text" id="houseOwner" placeholder="Nama orang tua" required />
+                    <div class="form-error">Nama ortu wajib diisi</div>
+                </div>
+
+                <!-- Tanggal & Jam -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tanggal acara <span class="required">*</span></label>
+                        <input type="date" id="weddingDate" required />
+                        <div class="form-error">Tanggal wajib diisi</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jam Acara <span class="required">*</span></label>
+                        <input type="time" id="eventTime" required />
+                        <div class="form-error">Jam wajib diisi</div>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div class="form-group">
+                    <label>Nama Instagram <span class="required">*</span></label>
+                    <input type="text" id="instagram" placeholder="@username" required />
+                    <div class="form-error">Instagram wajib diisi</div>
+                </div>
+
+                <!-- Bridesmaid/Groomsmen -->
+                <div class="form-group">
+                    <label>Bridesmaid / Groomsmen berapa orang <span class="required">*</span></label>
+                    <input type="number" id="bridesmaidCount" placeholder="4" required />
+                    <div class="form-error">Jumlah bridesmaid/groomsmen wajib diisi</div>
+                </div>
+
+                <!-- Shareloc -->
+                <div class="form-group">
+                    <label>Shareloc (kirim via WA) <span class="required">*</span></label>
+                    <input type="text" id="shareloc" placeholder="Link Google Maps atau keterangan" required />
+                    <div class="form-error">Shareloc wajib diisi</div>
+                </div>
+
+                <!-- Add-on (checkbox) -->
+                <div class="form-group">
+                    <label>Add‑on (tambahan)</label>
+                    <div class="addon-checkboxes" id="addonCheckboxes">
+                        <!-- di-render oleh JS -->
+                    </div>
+                </div>
+
+                <!-- Catatan -->
                 <div class="form-group">
                     <label>Catatan (opsional)</label>
                     <textarea id="clientNote" placeholder="Tambahkan permintaan khusus …" rows="3"></textarea>
@@ -1083,58 +1197,87 @@
             'use strict';
 
             // ============================================================
-            // 1. DATA DUMMY — mudah diubah
+            // 1. DATA — berdasarkan price list Zero Pictura 2026
             // ============================================================
 
             const PACKAGES = [{
-                id: 'basic',
-                name: 'Basic',
-                price: 8000000,
-                desc: 'Dokumentasi esensial dengan gaya natural.',
-                features: ['Fotografi 6 jam', '1 fotografer', '100+ foto diedit', 'Gallery online'],
+                id: 'jasmine',
+                name: 'Jasmine Wedding',
+                price: 4000000,
+                desc: 'Foto + Live Streaming, 8 jam sesi.',
+                features: ['8 jam sesi (06.30–15.00)', 'Unlimited foto', '1 fotografer',
+                    '150 foto diedit', '1 Album Hardcover 30x20 | 10 Sheet', 'USB Flashdisk',
+                    'Live Streaming Youtube (no cut)'
+                ],
                 popular: false,
             }, {
-                id: 'standard',
-                name: 'Standard',
-                price: 15000000,
-                desc: 'Kombinasi sempurna antara kualitas &amp; nilai.',
-                features: ['Fotografi 10 jam', '2 fotografer', '300+ foto diedit', 'Gallery online',
-                    'Cetak album 20 halaman'
+                id: 'royal',
+                name: 'Royal Wedding',
+                price: 6500000,
+                desc: 'Foto, Cinematic Video & Live Streaming.',
+                features: ['9 jam sesi (06.30–16.00)', 'Unlimited foto', '2 fotografer',
+                    '1 videografer', '250 foto diedit', '1 Album Hardcover 30x20 | 11 Sheet',
+                    '1 Cetak Canvas 16R+frame', 'Teaser 2 menit', 'Same day edit 30 detik',
+                    'Live Streaming Youtube', 'USB Flashdisk'
                 ],
                 popular: true,
             }, {
-                id: 'premium',
-                name: 'Premium',
-                price: 25000000,
-                desc: 'Pengalaman penuh sinematik untuk hari istimewa.',
-                features: ['Fotografi 14 jam', '3 fotografer', '500+ foto diedit', 'Gallery online',
-                    'Cetak album 40 halaman', 'Video highlight 3 menit'
+                id: 'zero',
+                name: 'Zero Package',
+                price: 9500000,
+                desc: 'Paket premium dengan photobooth & WCC.',
+                features: ['9 jam sesi (06.30–16.00)', 'Unlimited foto', '2 fotografer',
+                    '1 videografer', '400 foto diedit', '2 Album Hardcover 30x20 | 11 Sheet',
+                    '2 Canvas 40x60 + frame', '5 foto 5R, 3 foto 10R',
+                    'Same day edit 30 detik', 'Teaser 2 menit', 'Clip 5 menit',
+                    'USB Flashdisk', 'Free Photobooth cetak', 'Free Wedding Content Creator'
+                ],
+                popular: false,
+            }, {
+                id: 'allin',
+                name: 'All in Package',
+                price: 11500000,
+                desc: 'Bundling Prewedding + Wedding lengkap.',
+                features: ['Prewedding 2 konsep (indoor/outdoor)', '3 jam sesi prewedding',
+                    '1 fotografer + videografer', '50 foto diedit prewedding',
+                    '2 Photoframe 16R, 4 Photoframe 5R', 'Teaser prewedding',
+                    'Wedding 8 jam sesi', '1 fotografer + videografer',
+                    '200 foto diedit wedding', '1 Album Hardcover 30x20 | 10 Sheet',
+                    '1 Canvas 16R', 'Teaser wedding 2 menit', 'Sneakpeek 30 detik',
+                    'USB Flashdisk'
                 ],
                 popular: false,
             }];
 
             const ADDONS = [{
-                id: 'video',
-                label: 'Video Highlight (3 menit)',
-                price: 3000000,
+                id: 'backdrop3',
+                label: 'Backdrop 3 meter',
+                price: 300000,
             }, {
-                id: 'album',
-                label: 'Album Cetak Premium (40 halaman)',
-                price: 2000000,
+                id: 'backdrop6',
+                label: 'Backdrop 6 meter',
+                price: 500000,
             }, {
-                id: 'drone',
-                label: 'Drone Shot (30 menit)',
-                price: 1500000,
+                id: 'lighting',
+                label: 'Lighting Aesthetic',
+                price: 300000,
+            }, {
+                id: 'bundling',
+                label: 'Bundling Backdrop + Lighting',
+                price: 700000,
+            }, {
+                id: 'livestream',
+                label: 'Live Streaming (add‑on)',
+                price: 1000000,
             }];
 
             const DP_PERCENT = 50; // 50% DP
             const COMPANY_NAME = 'Zero Pictura';
             const COMPANY_TAGLINE = 'Wedding Photography';
 
-            // Kontak (mudah diganti)
             const CONTACT = {
-                phone: '+62 812 3456 7890',
-                email: 'hello@zeropictura.com',
+                phone: '+62 8249 996 550',
+                email: 'zeropictura@gmail.com',
                 instagram: '@zeropictura',
             };
 
@@ -1142,8 +1285,7 @@
             // 2. STATE
             // ============================================================
 
-            let currentInvoice = null; // objek invoice terakhir
-            let selectedPackageId = null; // untuk pre-fill dari tombol
+            let currentInvoice = null;
 
             // ============================================================
             // 3. DOM REFS
@@ -1164,13 +1306,23 @@
 
             // Form fields
             const clientName = document.getElementById('clientName');
-            const clientWhatsapp = document.getElementById('clientWhatsapp');
-            const clientEmail = document.getElementById('clientEmail');
-            const weddingDate = document.getElementById('weddingDate');
-            const weddingLocation = document.getElementById('weddingLocation');
+            const photoAngle = document.getElementById('photoAngle');
             const selectedPackage = document.getElementById('selectedPackage');
-            const selectedAddon = document.getElementById('selectedAddon');
+            const venue = document.getElementById('venue');
+            const guestCount = document.getElementById('guestCount');
+            const address = document.getElementById('address');
+            const gangSelect = document.getElementById('gangSelect');
+            const gangGroup = document.getElementById('gangGroup');
+            const gangName = document.getElementById('gangName');
+            const landmark = document.getElementById('landmark');
+            const houseOwner = document.getElementById('houseOwner');
+            const weddingDate = document.getElementById('weddingDate');
+            const eventTime = document.getElementById('eventTime');
+            const instagram = document.getElementById('instagram');
+            const bridesmaidCount = document.getElementById('bridesmaidCount');
+            const shareloc = document.getElementById('shareloc');
             const clientNote = document.getElementById('clientNote');
+            const addonCheckboxes = document.getElementById('addonCheckboxes');
 
             // ============================================================
             // 4. HELPERS
@@ -1218,7 +1370,6 @@
                     </div>
                 `).join('');
 
-                // Event listener untuk tombol Book Now di cards
                 packagesGrid.querySelectorAll('[data-package]').forEach(btn => {
                     btn.addEventListener('click', function(e) {
                         const pkgId = this.dataset.package;
@@ -1232,9 +1383,13 @@
                 selectedPackage.innerHTML = '<option value="">— Pilih paket —</option>' +
                     PACKAGES.map(p => `<option value="${p.id}">${p.name} — ${formatRupiah(p.price)}</option>`).join('');
 
-                // Add-on
-                selectedAddon.innerHTML = '<option value="none">Tanpa add-on</option>' +
-                    ADDONS.map(a => `<option value="${a.id}">${a.label} — ${formatRupiah(a.price)}</option>`).join('');
+                // Add-on checkboxes
+                addonCheckboxes.innerHTML = ADDONS.map(a => `
+                    <label>
+                        <input type="checkbox" value="${a.id}" data-price="${a.price}" />
+                        ${a.label} <span class="addon-price">(${formatRupiah(a.price)})</span>
+                    </label>
+                `).join('');
             }
 
             // ============================================================
@@ -1242,16 +1397,12 @@
             // ============================================================
 
             function openBookingForm(packageId) {
-                // Reset error states
                 document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
 
-                // Pre-select package jika ada
                 if (packageId) {
                     selectedPackage.value = packageId;
-                    selectedPackageId = packageId;
                 } else {
                     selectedPackage.value = '';
-                    selectedPackageId = null;
                 }
 
                 // Set default tanggal besok
@@ -1261,18 +1412,33 @@
                     weddingDate.value = tomorrow.toISOString().split('T')[0];
                 }
 
+                // Reset gang visibility
+                gangGroup.classList.remove('visible');
+                gangName.value = '';
+                gangSelect.value = '';
+
                 bookingModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                // Fokus ke field pertama
                 setTimeout(() => clientName.focus(), 200);
             }
 
             function closeBookingForm() {
                 bookingModal.classList.remove('active');
                 document.body.style.overflow = '';
-                // Reset error visual
                 document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
             }
+
+            // Toggle gang input
+            gangSelect.addEventListener('change', function() {
+                if (this.value === 'Ya') {
+                    gangGroup.classList.add('visible');
+                    gangName.setAttribute('required', 'required');
+                } else {
+                    gangGroup.classList.remove('visible');
+                    gangName.removeAttribute('required');
+                    gangName.value = '';
+                }
+            });
 
             // ============================================================
             // 7. VALIDASI
@@ -1280,19 +1446,26 @@
 
             function validateForm() {
                 let valid = true;
-
-                // Reset error
                 document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
 
-                const fields = [
-                    { el: clientName, msg: 'Nama wajib diisi' },
-                    { el: clientWhatsapp, msg: 'WhatsApp wajib diisi' },
-                    { el: clientEmail, msg: 'Email wajib diisi dengan format benar' },
-                    { el: weddingDate, msg: 'Tanggal wedding wajib diisi' },
-                    { el: weddingLocation, msg: 'Lokasi wajib diisi' },
+                const requiredFields = [
+                    { el: clientName, msg: 'Nama pasangan wajib diisi' },
+                    { el: photoAngle, msg: 'Posisi/angle foto wajib diisi' },
+                    { el: selectedPackage, msg: 'Paket wajib dipilih' },
+                    { el: venue, msg: 'Venue wajib dipilih' },
+                    { el: guestCount, msg: 'Jumlah tamu wajib diisi' },
+                    { el: address, msg: 'Alamat wajib diisi' },
+                    { el: gangSelect, msg: 'Pilih ya/tidak untuk gang' },
+                    { el: landmark, msg: 'Patokan wajib diisi' },
+                    { el: houseOwner, msg: 'Nama ortu wajib diisi' },
+                    { el: weddingDate, msg: 'Tanggal acara wajib diisi' },
+                    { el: eventTime, msg: 'Jam acara wajib diisi' },
+                    { el: instagram, msg: 'Instagram wajib diisi' },
+                    { el: bridesmaidCount, msg: 'Jumlah bridesmaid/groomsmen wajib diisi' },
+                    { el: shareloc, msg: 'Shareloc wajib diisi' },
                 ];
 
-                fields.forEach(f => {
+                requiredFields.forEach(f => {
                     const val = f.el.value.trim();
                     if (!val) {
                         f.el.closest('.form-group').classList.add('error');
@@ -1300,16 +1473,22 @@
                     }
                 });
 
-                // Email format
-                const email = clientEmail.value.trim();
-                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    clientEmail.closest('.form-group').classList.add('error');
-                    valid = false;
+                // Validasi gang name jika Ya
+                if (gangSelect.value === 'Ya') {
+                    const gangVal = gangName.value.trim();
+                    if (!gangVal) {
+                        gangName.closest('.form-group').classList.add('error');
+                        valid = false;
+                    }
                 }
 
-                // Paket
-                if (!selectedPackage.value) {
-                    selectedPackage.closest('.form-group').classList.add('error');
+                // Validasi guest count harus angka positif
+                if (guestCount.value && parseInt(guestCount.value) <= 0) {
+                    guestCount.closest('.form-group').classList.add('error');
+                    valid = false;
+                }
+                if (bridesmaidCount.value && parseInt(bridesmaidCount.value) < 0) {
+                    bridesmaidCount.closest('.form-group').classList.add('error');
                     valid = false;
                 }
 
@@ -1322,9 +1501,10 @@
 
             function generateInvoice(formData) {
                 const pkg = PACKAGES.find(p => p.id === formData.packageId);
-                const addon = ADDONS.find(a => a.id === formData.addonId);
+                const selectedAddons = formData.addonIds.map(id => ADDONS.find(a => a.id === id)).filter(Boolean);
+                const addonTotal = selectedAddons.reduce((sum, a) => sum + a.price, 0);
 
-                const subtotal = pkg.price + (addon ? addon.price : 0);
+                const subtotal = pkg.price + addonTotal;
                 const dp = Math.round(subtotal * DP_PERCENT / 100);
                 const sisa = subtotal - dp;
 
@@ -1332,21 +1512,28 @@
                     number: generateInvoiceNumber(),
                     date: getTodayStr(),
                     clientName: formData.clientName,
-                    clientWhatsapp: formData.clientWhatsapp,
-                    clientEmail: formData.clientEmail,
-                    weddingDate: formatDateInput(formData.weddingDate),
-                    weddingLocation: formData.weddingLocation,
+                    photoAngle: formData.photoAngle,
                     packageName: pkg.name,
                     packagePrice: pkg.price,
-                    addonName: addon ? addon.label : '-',
-                    addonPrice: addon ? addon.price : 0,
+                    venue: formData.venue,
+                    guestCount: formData.guestCount,
+                    address: formData.address,
+                    gang: formData.gang === 'Ya' ? formData.gangName : '-',
+                    landmark: formData.landmark,
+                    houseOwner: formData.houseOwner,
+                    weddingDate: formatDateInput(formData.weddingDate),
+                    eventTime: formData.eventTime,
+                    instagram: formData.instagram,
+                    bridesmaidCount: formData.bridesmaidCount,
+                    shareloc: formData.shareloc,
+                    addons: selectedAddons,
+                    addonTotal: addonTotal,
                     subtotal: subtotal,
                     dp: dp,
                     sisa: sisa,
                     note: formData.note || '-',
-                    status: 'Menunggu DP', // atau 'Lunas' jika mau
+                    status: 'Menunggu DP',
                 };
-
                 return invoice;
             }
 
@@ -1355,6 +1542,10 @@
             // ============================================================
 
             function renderInvoice(invoice) {
+                const addonRows = invoice.addons.map(a =>
+                    `<tr><td>Add‑on: ${a.label}</td><td class="amount">${formatRupiah(a.price)}</td></tr>`
+                ).join('');
+
                 const html = `
                     <div class="invoice-header">
                         <div>
@@ -1373,32 +1564,51 @@
 
                     <div class="invoice-grid">
                         <div>
-                            <div class="field">Client</div>
+                            <div class="field">Pasangan</div>
                             <div class="value">${invoice.clientName}</div>
-                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${invoice.clientWhatsapp} · ${invoice.clientEmail}</div>
+                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">Angle: ${invoice.photoAngle}</div>
                         </div>
                         <div>
-                            <div class="field">Wedding</div>
-                            <div class="value">${invoice.weddingDate}</div>
-                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${invoice.weddingLocation}</div>
+                            <div class="field">Paket</div>
+                            <div class="value">${invoice.packageName}</div>
+                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">${formatRupiah(invoice.packagePrice)}</div>
+                        </div>
+                        <div>
+                            <div class="field">Venue</div>
+                            <div class="value">${invoice.venue}</div>
+                            <div style="margin-top:4px;font-size:0.85rem;color:#555;">Tamu: ${invoice.guestCount} undangan</div>
+                        </div>
+                        <div>
+                            <div class="field">Tanggal & Jam</div>
+                            <div class="value">${invoice.weddingDate} · ${invoice.eventTime}</div>
+                        </div>
+                        <div class="full-width">
+                            <div class="field">Alamat</div>
+                            <div class="value">${invoice.address} ${invoice.gang !== '-' ? `(Gang ${invoice.gang})` : ''}</div>
+                            <div style="font-size:0.85rem;color:#555;">Patokan: ${invoice.landmark} · Rumah atas nama ${invoice.houseOwner}</div>
+                        </div>
+                        <div>
+                            <div class="field">Instagram</div>
+                            <div class="value">${invoice.instagram}</div>
+                        </div>
+                        <div>
+                            <div class="field">Bridesmaid/Groomsmen</div>
+                            <div class="value">${invoice.bridesmaidCount} orang</div>
+                        </div>
+                        <div class="full-width">
+                            <div class="field">Shareloc</div>
+                            <div class="value">${invoice.shareloc}</div>
                         </div>
                     </div>
 
                     <table class="invoice-table">
-                        <thead>
-                            <tr><th>Deskripsi</th><th style="text-align:right;">Harga</th></tr>
-                        </thead>
+                        <thead><tr><th>Deskripsi</th><th style="text-align:right;">Harga</th></tr></thead>
                         <tbody>
                             <tr>
                                 <td>Paket ${invoice.packageName}</td>
                                 <td class="amount">${formatRupiah(invoice.packagePrice)}</td>
                             </tr>
-                            ${invoice.addonName !== '-' ? `
-                            <tr>
-                                <td>Add-on: ${invoice.addonName}</td>
-                                <td class="amount">${formatRupiah(invoice.addonPrice)}</td>
-                            </tr>
-                            ` : ''}
+                            ${addonRows}
                             <tr class="total-row">
                                 <td><strong>Subtotal</strong></td>
                                 <td class="amount">${formatRupiah(invoice.subtotal)}</td>
@@ -1436,12 +1646,9 @@
                 invoiceContainer.innerHTML = html;
                 currentInvoice = invoice;
 
-                // Tampilkan halaman invoice
                 document.getElementById('hero').style.display = 'none';
                 document.getElementById('packages').style.display = 'none';
                 invoicePage.classList.add('active');
-
-                // Scroll ke atas invoice
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
@@ -1453,40 +1660,30 @@
                 const container = document.getElementById('invoiceContainer');
                 if (!container) return;
 
-                // Tampilkan loading (opsional)
                 const btn = document.querySelector('.invoice-actions .btn-primary');
-                if (btn) {
-                    btn.textContent = 'Memproses...';
-                    btn.disabled = true;
-                }
+                if (btn) { btn.textContent = 'Memproses...';
+                    btn.disabled = true; }
 
                 try {
-                    // Capture container dengan html2canvas
                     const canvas = await html2canvas(container, {
                         scale: 2,
                         backgroundColor: '#fcf9f5',
                         logging: false,
                         useCORS: true,
                     });
-
                     const imgData = canvas.toDataURL('image/png');
-
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     pdf.save(`Invoice_${currentInvoice.number}.pdf`);
-
                 } catch (err) {
                     console.error('PDF error:', err);
                     alert('Gagal generate PDF. Silakan coba lagi.');
                 } finally {
-                    if (btn) {
-                        btn.textContent = 'Download Invoice PDF';
-                        btn.disabled = false;
-                    }
+                    if (btn) { btn.textContent = 'Download Invoice PDF';
+                        btn.disabled = false; }
                 }
             }
 
@@ -1498,44 +1695,51 @@
                 e.preventDefault();
 
                 if (!validateForm()) {
-                    // Scroll ke error pertama
                     const firstError = document.querySelector('.form-group.error input, .form-group.error select');
                     if (firstError) firstError.focus();
                     return;
                 }
 
                 // Kumpulkan data
+                const selectedAddonIds = [];
+                document.querySelectorAll('#addonCheckboxes input[type="checkbox"]:checked').forEach(cb => {
+                    selectedAddonIds.push(cb.value);
+                });
+
                 const formData = {
                     clientName: clientName.value.trim(),
-                    clientWhatsapp: clientWhatsapp.value.trim(),
-                    clientEmail: clientEmail.value.trim(),
-                    weddingDate: weddingDate.value,
-                    weddingLocation: weddingLocation.value.trim(),
+                    photoAngle: photoAngle.value.trim(),
                     packageId: selectedPackage.value,
-                    addonId: selectedAddon.value,
+                    venue: venue.value,
+                    guestCount: guestCount.value.trim(),
+                    address: address.value.trim(),
+                    gang: gangSelect.value,
+                    gangName: gangName.value.trim(),
+                    landmark: landmark.value.trim(),
+                    houseOwner: houseOwner.value.trim(),
+                    weddingDate: weddingDate.value,
+                    eventTime: eventTime.value,
+                    instagram: instagram.value.trim(),
+                    bridesmaidCount: bridesmaidCount.value.trim(),
+                    shareloc: shareloc.value.trim(),
+                    addonIds: selectedAddonIds,
                     note: clientNote.value.trim(),
                 };
 
-                // Generate invoice
                 const invoice = generateInvoice(formData);
 
-                // Simpan ke localStorage
                 try {
                     const history = JSON.parse(localStorage.getItem('zeroPictura_bookings') || '[]');
                     history.push({ ...invoice, createdAt: new Date().toISOString() });
                     localStorage.setItem('zeroPictura_bookings', JSON.stringify(history));
                 } catch (_) { /* ignore */ }
 
-                // Tutup modal
                 closeBookingForm();
-
-                // Tampilkan invoice
                 renderInvoice(invoice);
 
-                // Tambahkan tombol download PDF ke invoice-actions
+                // Tambahkan tombol aksi di invoice
                 const actionsDiv = invoiceContainer.querySelector('.invoice-actions');
                 if (!actionsDiv) {
-                    // Jika belum ada, buat div actions
                     const wrapper = document.createElement('div');
                     wrapper.className = 'invoice-actions';
                     wrapper.innerHTML = `
@@ -1550,16 +1754,9 @@
                     `;
                 }
 
-                // Event listener download
                 document.getElementById('downloadPdfBtn').addEventListener('click', downloadInvoicePDF);
+                document.getElementById('backToHomeBtn').addEventListener('click', resetToHome);
 
-                // Event listener back to home
-                document.getElementById('backToHomeBtn').addEventListener('click', function() {
-                    resetToHome();
-                });
-
-                // Tampilkan toast sukses
-                successToast.querySelector('strong')?.remove();
                 successToast.innerHTML = '✅ Booking berhasil! Invoice <strong>' + invoice.number +
                     '</strong> telah dibuat.';
                 successToast.classList.add('show');
@@ -1575,12 +1772,11 @@
                 document.getElementById('hero').style.display = 'flex';
                 document.getElementById('packages').style.display = 'block';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                // Reset form (opsional)
                 bookingForm.reset();
                 document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
-                // Reset invoice container
                 invoiceContainer.innerHTML = '';
                 currentInvoice = null;
+                gangGroup.classList.remove('visible');
             }
 
             // ============================================================
@@ -1589,20 +1785,15 @@
 
             modalCloseBtn.addEventListener('click', closeBookingForm);
             modalCancelBtn.addEventListener('click', closeBookingForm);
-
-            // Klik overlay (background) untuk tutup
             bookingModal.addEventListener('click', function(e) {
                 if (e.target === this) closeBookingForm();
             });
-
-            // Escape key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && bookingModal.classList.contains('active')) {
                     closeBookingForm();
                 }
             });
 
-            // Tombol booking dari hero & nav
             heroBookingBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 openBookingForm(null);
@@ -1619,8 +1810,6 @@
             hamburger.addEventListener('click', function() {
                 navLinks.classList.toggle('open');
             });
-
-            // Tutup nav saat link diklik (mobile)
             navLinks.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => navLinks.classList.remove('open'));
             });
@@ -1631,13 +1820,9 @@
 
             renderPackages();
             populateFormOptions();
-
-            // Sembunyikan invoice page awal
             invoicePage.classList.remove('active');
 
-            // Jika ada booking di URL? tidak perlu.
-
-            console.log('Zero Pictura V1 siap!');
+            console.log('Zero Pictura V1 (dengan form lengkap) siap!');
             console.log('📦 Paket:', PACKAGES);
             console.log('🧩 Add-on:', ADDONS);
             console.log('📞 Kontak:', CONTACT);
