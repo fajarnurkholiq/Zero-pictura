@@ -600,7 +600,7 @@
         }
 
         /* ============================
-               BOOKING FORM (MODAL)
+               BOOKING FORM (MODAL) — PERBAIKAN SCROLL
             ============================ */
         .modal-overlay {
             position: fixed;
@@ -609,10 +609,12 @@
             background: rgba(28, 26, 24, 0.75);
             backdrop-filter: blur(6px);
             display: none;
-            align-items: center;
+            align-items: flex-start;
+            /* agar scroll dari atas */
             justify-content: center;
-            padding: 24px;
+            padding: 80px 24px 40px;
             overflow-y: auto;
+            /* overlay ikut scroll */
         }
 
         .modal-overlay.active {
@@ -627,14 +629,14 @@
             padding: 48px 40px 40px;
             position: relative;
             box-shadow: var(--shadow);
-            max-height: 95vh;
-            overflow-y: auto;
+            margin: 0 auto;
+            /* tidak ada max-height, biar mengikuti konten */
         }
 
         .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 20px;
+            position: sticky;
+            top: 0;
+            float: right;
             background: none;
             border: none;
             color: var(--text-muted);
@@ -643,6 +645,7 @@
             transition: var(--transition);
             line-height: 1;
             font-family: var(--font-serif);
+            z-index: 10;
         }
 
         .modal-close:hover {
@@ -655,6 +658,7 @@
             font-size: 1.8rem;
             margin-bottom: 6px;
             color: var(--charcoal);
+            clear: both;
         }
 
         .modal .sub {
@@ -753,17 +757,18 @@
             display: flex;
             gap: 12px;
             margin-top: 8px;
+            flex-wrap: wrap;
         }
 
         .form-actions .btn-primary {
             flex: 1;
+            min-width: 180px;
         }
 
         .form-actions .btn-outline {
             flex: 0 0 auto;
         }
 
-        /* Add-on checkboxes */
         .addon-checkboxes {
             display: flex;
             flex-wrap: wrap;
@@ -794,11 +799,9 @@
             font-size: 0.75rem;
         }
 
-        /* Conditional gang */
         .gang-group {
             display: none;
         }
-
         .gang-group.visible {
             display: block;
         }
@@ -845,11 +848,9 @@
             font-weight: 700;
             color: var(--charcoal);
         }
-
         .invoice-brand span {
             color: var(--gold-dark);
         }
-
         .invoice-brand .tag {
             display: block;
             font-size: 0.6rem;
@@ -864,13 +865,11 @@
         .invoice-meta {
             text-align: right;
         }
-
         .invoice-meta .number {
             font-size: 1rem;
             font-weight: 600;
             color: var(--gold-dark);
         }
-
         .invoice-meta .date {
             font-size: 0.8rem;
             color: var(--gray);
@@ -882,7 +881,6 @@
             gap: 16px 32px;
             margin-bottom: 28px;
         }
-
         .invoice-grid .field {
             font-size: 0.65rem;
             text-transform: uppercase;
@@ -890,13 +888,11 @@
             color: var(--gray);
             margin-bottom: 2px;
         }
-
         .invoice-grid .value {
             font-size: 0.95rem;
             font-weight: 500;
             color: var(--charcoal);
         }
-
         .invoice-grid .full-width {
             grid-column: 1 / -1;
         }
@@ -907,7 +903,6 @@
             margin: 28px 0 24px;
             font-size: 0.9rem;
         }
-
         .invoice-table th {
             text-align: left;
             font-size: 0.65rem;
@@ -918,21 +913,17 @@
             border-bottom: 1px solid var(--gray-light);
             font-weight: 600;
         }
-
         .invoice-table td {
             padding: 12px 0;
             border-bottom: 1px solid var(--gray-light);
         }
-
         .invoice-table tr:last-child td {
             border-bottom: none;
         }
-
         .invoice-table .amount {
             text-align: right;
             font-weight: 500;
         }
-
         .invoice-table .total-row td {
             font-weight: 600;
             font-size: 1rem;
@@ -940,7 +931,6 @@
             border-top: 2px solid var(--gold-light);
             border-bottom: none;
         }
-
         .invoice-table .total-row .amount {
             color: var(--gold-dark);
         }
@@ -954,7 +944,6 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-
         .invoice-summary .status {
             display: inline-block;
             background: #e8d5c0;
@@ -966,12 +955,10 @@
             padding: 4px 20px;
             border-radius: 0;
         }
-
         .invoice-summary .total-label {
             font-weight: 500;
             color: var(--gray);
         }
-
         .invoice-summary .total-value {
             font-family: var(--font-serif);
             font-size: 1.3rem;
@@ -985,21 +972,17 @@
             margin-top: 32px;
             flex-wrap: wrap;
         }
-
         .invoice-actions .btn-primary {
             background: var(--charcoal);
             color: var(--warm-white);
         }
-
         .invoice-actions .btn-primary:hover {
             background: var(--gold-dark);
         }
-
         .invoice-actions .btn-outline {
             border-color: var(--gray-light);
             color: var(--text-muted);
         }
-
         .invoice-actions .btn-outline:hover {
             background: var(--charcoal);
             color: var(--warm-white);
@@ -1026,12 +1009,10 @@
             font-size: 0.9rem;
             font-weight: 300;
         }
-
         .success-toast.show {
             display: block;
             animation: fadeUp 0.5s ease;
         }
-
         .success-toast strong {
             color: var(--gold-light);
         }
@@ -1056,7 +1037,6 @@
             color: rgba(255, 255, 255, 0.5);
             border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
-
         .footer .container {
             display: flex;
             justify-content: space-between;
@@ -1064,36 +1044,30 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-
         .footer .brand {
             font-family: var(--font-serif);
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--warm-white);
         }
-
         .footer .brand span {
             color: var(--gold-light);
         }
-
         .footer .tagline {
             font-size: 0.55rem;
             letter-spacing: 2px;
             color: rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
         }
-
         .footer-links {
             display: flex;
             gap: 24px;
             font-size: 0.75rem;
         }
-
         .footer-links a {
             color: rgba(255, 255, 255, 0.4);
             transition: var(--transition);
         }
-
         .footer-links a:hover {
             color: var(--warm-white);
         }
@@ -1106,50 +1080,40 @@
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-
             .hero-content {
                 padding-right: 0;
             }
-
             .hero-image {
                 min-height: 300px;
             }
-
             .about-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-
             .about-image {
                 min-height: 300px;
             }
-
             .portfolio-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 12px;
             }
-
             .portfolio-grid .item:first-child {
                 grid-column: 1 / 2;
                 grid-row: 1 / 2;
                 aspect-ratio: 1/1;
             }
-
             .portfolio-grid .item:nth-child(2) {
                 grid-column: 2 / 3;
                 aspect-ratio: 1/1;
             }
-
             .portfolio-grid .item:nth-child(3) {
                 grid-column: 1 / 2;
                 aspect-ratio: 1/1;
             }
-
             .portfolio-grid .item:nth-child(4) {
                 grid-column: 2 / 3;
                 aspect-ratio: 1/1;
             }
-
             .packages-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -1159,7 +1123,6 @@
             .navbar {
                 padding: 12px 0;
             }
-
             .nav-links {
                 display: none;
                 flex-direction: column;
@@ -1174,100 +1137,83 @@
                 border: 1px solid rgba(0, 0, 0, 0.04);
                 box-shadow: var(--shadow);
             }
-
             .nav-links.open {
                 display: flex;
             }
-
             .hamburger {
                 display: flex;
             }
-
             .hero {
                 padding: 100px 0 60px;
                 min-height: auto;
             }
-
             .hero h1 {
                 font-size: clamp(2.2rem, 8vw, 3rem);
             }
-
             .hero p {
                 font-size: 1rem;
             }
-
             .hero-stats {
                 gap: 28px;
                 flex-wrap: wrap;
             }
-
             .hero-stats strong {
                 font-size: 1.3rem;
             }
-
             .portfolio {
                 padding: 60px 0 80px;
             }
-
             .portfolio-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
-
             .about {
                 padding: 60px 0 80px;
             }
-
             .packages {
                 padding: 60px 0 80px;
             }
-
             .packages-grid {
                 grid-template-columns: 1fr;
                 max-width: 400px;
                 margin-left: auto;
                 margin-right: auto;
             }
-
+            .modal-overlay {
+                padding: 60px 16px 30px;
+                align-items: flex-start;
+            }
             .modal {
                 padding: 32px 20px 28px;
             }
-
             .form-row {
                 grid-template-columns: 1fr;
                 gap: 0;
             }
-
             .invoice-container {
                 padding: 24px 16px 28px;
                 border-radius: 2px;
             }
-
             .invoice-header {
                 flex-direction: column;
                 align-items: stretch;
                 text-align: left;
             }
-
             .invoice-meta {
                 text-align: left;
             }
-
             .invoice-grid {
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
-
             .invoice-actions {
                 flex-direction: column;
             }
-
             .invoice-actions .btn-primary,
             .invoice-actions .btn-outline {
                 width: 100%;
                 text-align: center;
             }
-
             .footer .container {
                 flex-direction: column;
                 text-align: center;
@@ -1278,19 +1224,15 @@
             .container {
                 padding: 0 16px;
             }
-
             .hero h1 {
                 font-size: 2rem;
             }
-
             .package-card {
                 padding: 28px 20px 24px;
             }
-
             .modal {
                 padding: 24px 16px 20px;
             }
-
             .portfolio-grid {
                 gap: 8px;
             }
@@ -1300,19 +1242,15 @@
         .text-center {
             text-align: center;
         }
-
         .mt-8 {
             margin-top: 8px;
         }
-
         .mt-16 {
             margin-top: 16px;
         }
-
         .mb-8 {
             margin-bottom: 8px;
         }
-
         .hidden {
             display: none !important;
         }
@@ -2291,7 +2229,7 @@
             populateFormOptions();
             invoicePage.classList.remove('active');
 
-            console.log('Zero Pictura — V1 Final siap!');
+            console.log('Zero Pictura — V1 Final (scroll fixed) siap!');
             console.log('📦 Paket:', PACKAGES);
             console.log('🧩 Add-on:', ADDONS);
             console.log('📞 WhatsApp:', WA_NUMBER);
